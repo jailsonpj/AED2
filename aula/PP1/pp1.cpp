@@ -1,6 +1,8 @@
 #include <iostream>
 #include <cstdlib>
 #include <vector>
+#include <map>
+#include <utility>
 #define NIL -1
 
 typedef int Vertex;
@@ -299,26 +301,33 @@ void BFS::bfs(Grafo &g,int s){
 }
 
 
-void constroiGrafo(int l,int c){
-	Grafo g();
-	g.insertEdge()
-	vector<int> di = {-1,+1,-2,+2,-2,-2,+2,-1,+1};
+void mapeaRei(int l,int c){
+  vector<int> di = {-1,+1,-2,+2,-2,-2,+2,-1,+1};
   vector<int> dj = {-2,-2,-1,-1,-1,+1,+1,+2,+2};
+  vector<pair<int,int> > car;
   int l1,c1;
-  for(int i=0;i<=8;i++){
-    l1 = l+ di[i];
-    c1 = c+dj[i];
-    if((l1>=1 && l1<=8) && (c1>=1 && c1<=8)){
-
-      }
-  }
+  int cont = 0;
+    car.push_back(make_pair(l,c));
+  for(int i=0;i<8;i++){
+      
+      
+        l1 = l+ di[i];
+        c1 = c+dj[i];
+        if((l1>=1 && l1<=8) && (c1>=1 && c1<=8)){
+            car.push_back(make_pair(l1,c1));
+        }
+    
+          
+ }
+  
+  
+  
 }
-
-
+  
 int main(int argc, char const *argv[]) {
 
-
-
+    mapeaRei(4,5);
+    
 
   return 0;
 }
