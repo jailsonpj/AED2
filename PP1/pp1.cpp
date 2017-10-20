@@ -128,6 +128,7 @@ public:
   void destroy();
   T getItem(int pos);
   int getTam();
+  vector<T> getLista();
 
 
 };
@@ -173,7 +174,10 @@ T List<T>::getItem(int pos){
   return lista[pos];
 }
 
-
+template <class T>
+vector<T> List<T>::getLista(){
+  return lista;
+}
 
 
 //Grafo
@@ -203,8 +207,7 @@ public:
   int getN();
   int getM();
   List<Vertex> getAdj(int);
-
-
+	//void ordenaListas();
 };
 
  Grafo::Grafo(int n){
@@ -237,6 +240,36 @@ List<Vertex> Grafo::getAdj(int pos){
   return adj[pos];
 }
 
+/*void Grafo::countingsort(vector<int> const v, vector<int> &new_v, int const k){
+   vector<int> aux(k);
+    for(int i = 0; i < k; i++){
+        aux[i] = 0;
+       }
+
+    for(int j = 1; j < v.size(); j++){
+        aux[v[j]] = aux[v[j]]+1;
+     }
+
+    for(int i = 1; i <= k; i++){
+        aux[i] = aux[i] + aux[i-1];
+    }
+
+   for(int j = v.size(); j >= 1; j--){
+       new_v[aux[v[j]]] = v[j];
+         aux[v[j]] = aux[v[j]]-1;
+        }
+  }*/
+
+
+/*void Grafo::ordenaListas(){
+  for(int i=0;i<=n;i++){
+    vector<int> v(adj[i].getTam());
+    vector<int> v2(adj[i].getTam());
+  }
+
+}*/
+
+/*Classe Busca em Largura*/
 class BFS{
 private:
   int *pred;
@@ -255,6 +288,7 @@ public:
   void mostraBFS();
   void menorCaminho();
   int getAchado();
+  vector<int> getCaminho();
   void mostraMenorCaminho();
 };
 BFS::BFS(){ }
@@ -303,7 +337,6 @@ void BFS::bfs(Grafo &g,int s,int c){
 
     int u,v;
     u = fila.desenfileira();
-
     for(int i=0;i<g.getAdj(u).getTam();i++){
       v = g.getAdj(u).getItem(i);
         if(cor[v] == BRANCO){
@@ -320,7 +353,6 @@ void BFS::bfs(Grafo &g,int s,int c){
     }
     cor[u] = PRETO;
   }
-
 }
 
 void BFS::mostraBFS(){
@@ -346,21 +378,26 @@ void BFS::menorCaminho(){
 /*  for(int i=0;i<caminho.size();i++){
     cout << caminho[i] << endl;
   }*/
+  //return caminho;
 }
 
-void BFS::mostraMenorCaminho(){
+vector<int> BFS::getCaminho(){
+  return caminho;
+}
+/*void BFS::mostraMenorCaminho(){
   cout << d[achado] <<'\t';
   for(int i=0;i<caminho.size();i++){
       cout << caminho[i] <<'\t';
     }
     cout << endl;
-}
+}*/
 
 class Matriz{
 private:
   vector<vector<int> > mat;
   pair<int,int> grafo_tabuleiro[64];
   map<pair<int,int>,int> tabuleiro_grafo;
+  vector<int> ext;
   int menor;
   BFS bfs;
 public:
@@ -373,7 +410,7 @@ public:
   void preenche();
   void mostraMatriz();
   int getMenor();
-  void saida() ;
+  void saida();
 };
 Matriz::Matriz(){}
 void Matriz::inicializa(){
@@ -383,11 +420,11 @@ void Matriz::inicializa(){
   }
 
 
-  int k = 0;
+  int k = 1;
   for(int i=1;i<=8;i++){
     for(int j=1;j<=8;j++){
-      grafo_tabuleiro[k] = {i,j};
-      tabuleiro_grafo[{i,j}] = k;
+      grafo_tabuleiro[k] = {j,i};
+      tabuleiro_grafo[{j,i}] = k;
       k++;
     }
   }
@@ -458,29 +495,35 @@ void Matriz::mapeaRei(int l,int c,int lr,int cr){
     //g.print();
     //BFS bfs;
     int inicio = tabuleiro_grafo[{l,c}];
+		cout << tabuleiro_grafo[{l,c}] << endl;
     bfs.run(g,inicio,tabuleiro_grafo[{lr,cr}]);
     //bfs.mostraBFS();
     bfs.menorCaminho();
-
     menor = bfs.getD(bfs.getAchado());
 
     //cout << menor <<endl;
   //  bfs.mostraMenorCaminho();
+  //  g.print();
 }
 
 void Matriz::saida() {
-  bfs.mostraMenorCaminho();
+  cout << menor << '\t';
+  ext = bfs.getCaminho();
+  for(int i=ext.size()-1;i >=0;i--){
+    pair<int,int> pares;
+    //cout << ext[i] << '\t';
+    pares = grafo_tabuleiro[ext[i]];
+    cout << pares.first <<":" << pares.second << '\t';
+  }
+  cout << endl;
 }
 
-
-
-
-
+/* corpo principal */
 int main(int argc, char const *argv[]) {
 
 vector<pair<int,int> > minimo;
 vector<int> menor;
-vector<pair<int,int> > cord {{0,0},{1,8},{7,3},{8,5}};
+vector<pair<int,int> > cord {{1,1},{1,8},{7,3},{8,5}};
 Matriz mat[4];
 
 
