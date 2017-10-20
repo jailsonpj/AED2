@@ -129,8 +129,9 @@ public:
   T getItem(int pos);
   int getTam();
   vector<T> getLista();
-
-
+  int particao(vector<T> &v, int p, int r);
+  void quicksort(vector<T> &v, int p, int r);
+	void ordenaListas();
 };
 
 template <class T>
@@ -179,6 +180,49 @@ vector<T> List<T>::getLista(){
   return lista;
 }
 
+template <class T>
+int List<T>::particao(vector<T> &v, int p, int r){
+	int x = v[p], tmp = v[r+1];
+	v[r+1] = x;
+
+	int i = p, j = r+1;
+
+	while(true){
+		do{
+			i = i+1;
+		}while(v[i] < x);
+
+		do{
+			j = j-1;
+		}while(v[j] > x);
+
+		if(i < j){
+			swap(v[i], v[j]);
+		}
+		else{
+			swap(v[p],v[j]);
+			v[r+1] = tmp;
+			return j;
+		}
+	}
+}
+
+template <class T>
+void List<T>::quicksort(vector<T> &v, int p, int r){
+	int q;
+	if(p < r){
+		q = particao(v, p, r);
+		quicksort(v, p, q-1);
+		quicksort(v, q+1, r);
+	}
+}
+
+
+template <class T>
+void List<T>::ordenaListas(){
+    quicksort(lista,0,lista.size()-1);
+}
+
 
 //Grafo
 class Grafo{ //não direcionado
@@ -207,7 +251,7 @@ public:
   int getN();
   int getM();
   List<Vertex> getAdj(int);
-	//void ordenaListas();
+  void ordena();
 };
 
  Grafo::Grafo(int n){
@@ -240,34 +284,11 @@ List<Vertex> Grafo::getAdj(int pos){
   return adj[pos];
 }
 
-/*void Grafo::countingsort(vector<int> const v, vector<int> &new_v, int const k){
-   vector<int> aux(k);
-    for(int i = 0; i < k; i++){
-        aux[i] = 0;
-       }
-
-    for(int j = 1; j < v.size(); j++){
-        aux[v[j]] = aux[v[j]]+1;
-     }
-
-    for(int i = 1; i <= k; i++){
-        aux[i] = aux[i] + aux[i-1];
-    }
-
-   for(int j = v.size(); j >= 1; j--){
-       new_v[aux[v[j]]] = v[j];
-         aux[v[j]] = aux[v[j]]-1;
-        }
-  }*/
-
-
-/*void Grafo::ordenaListas(){
-  for(int i=0;i<=n;i++){
-    vector<int> v(adj[i].getTam());
-    vector<int> v2(adj[i].getTam());
+void Grafo::ordena(){
+  for(int i=0;i<this->n;i++){
+    adj[i].ordenaListas();
   }
-
-}*/
+}
 
 /*Classe Busca em Largura*/
 class BFS{
@@ -492,10 +513,11 @@ void Matriz::mapeaRei(int l,int c,int lr,int cr){
         }
       }
   }
-    //g.print();
+    g.ordena();
+    g.print();
     //BFS bfs;
     int inicio = tabuleiro_grafo[{l,c}];
-		cout << tabuleiro_grafo[{l,c}] << endl;
+		//cout << tabuleiro_grafo[{l,c}] << endl;
     bfs.run(g,inicio,tabuleiro_grafo[{lr,cr}]);
     //bfs.mostraBFS();
     bfs.menorCaminho();
