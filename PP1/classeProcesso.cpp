@@ -14,15 +14,23 @@ private:
 
 public:
 	Processamento();
+	void mostra();
 	void recebeEntrada();
 	void mostraEntrada(vector<pair<int,int> >);
-	void mostraSaida(vector<pair<string,int> >);
-	vector<pair<int,int> > convertePosicao(vector<string>);
-	void invertePosicao(vector<pair<int,int> >);
+	void mostraSaida(vector< pair<string,int> >);
+	void convertePosicao();
+	void invertePosicao();
 };
 
 Processamento::Processamento(){
 	recebeEntrada();
+}
+
+void Processamento::mostra(){
+	for (int i = 0; i < entrada.size(); ++i){
+		cout << entrada[i] << " ";
+	}
+	cout << endl;
 }
 
 void Processamento::recebeEntrada(){
@@ -31,10 +39,13 @@ void Processamento::recebeEntrada(){
 		cin.ignore();
 		entrada.push_back(jogada);
 	}
-	convertePosicao(entrada);
+	mostra();
+	convertePosicao();
+	cout << "------------\n";
+	invertePosicao();
 }
 
-void Processamento::mostraEntrada(vector< pair<int,int> > vec){
+void Processamento::mostraEntrada(vector<pair<int,int> > vec){
 	for ( vector <pair<int,int> >::const_iterator it = vec.begin(); it != vec.end (); it++){
 		cout << it->first << it->second << endl;
 	}
@@ -46,11 +57,11 @@ void Processamento::mostraSaida(vector< pair<string,int> > vec){
 	}
 }
 
-vector<pair<int,int> > Processamento::convertePosicao(vector<string> jogadas){
+void Processamento::convertePosicao(){
 	pair<int, int> par; 
-	
-	for (int i = 0; i < jogadas.size(); ++i){
-		par = make_pair(jogadas[i][1],jogadas[i][0]);
+
+	for (int i = 0; i < entrada.size(); ++i){
+		par = make_pair(entrada[i][1], entrada[i][0]);
 		coordenadas.push_back(par);
 	}
 
@@ -69,18 +80,15 @@ vector<pair<int,int> > Processamento::convertePosicao(vector<string> jogadas){
 			}
 		}
 	}
-	//mostraEntrada(coordenadas);
-	//invertePosicao(coordenadas);
-	return coordenadas;
+	mostraEntrada(coordenadas);
 }
 
-void Processamento::invertePosicao(vector<pair<int,int> > jogadas){
+void Processamento::invertePosicao(){
 	pair<string, int> par;
-
-	for (int i = 0; i < jogadas.size(); ++i){
+	for (int i = 0; i < coordenadas.size(); ++i){
 		for (int j = 1; j <= letras.size(); ++j){
-			if(jogadas[i].second == j){
-				par = make_pair(letras[j],jogadas[i].first);
+			if(coordenadas[i].second == j){
+				par = make_pair(letras[j],coordenadas[i].first);
 				saida.push_back(par);
 			}
 		}
