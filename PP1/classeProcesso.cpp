@@ -46,7 +46,7 @@ void Processamento::mostraSaida(vector< pair<string,int> > vec){
 	}
 }
 
-void Processamento::convertePosicao(vector<string> jogadas){
+vector<pair<int,int> > Processamento::convertePosicao(vector<string> jogadas){
 	pair<int, int> par; 
 	
 	for (int i = 0; i < jogadas.size(); ++i){
