@@ -522,7 +522,7 @@ void Matriz::mapeaRei(int l,int c,int lr,int cr){
     //bfs.mostraBFS();
     bfs.menorCaminho();
     menor = bfs.getD(bfs.getAchado());
-    cout << menor << endl;
+    //cout << menor << endl;
     //cout << menor <<endl;
   //  bfs.mostraMenorCaminho();
   //  g.print();
@@ -557,7 +557,7 @@ public:
 	void recebeEntrada();
 	void mostraEntrada(vector<pair<int,int> >);
 	void mostraSaida(vector<pair<string,int> >);
-	void convertePosicao(vector<string>);
+	void convertePosicao();
 	void invertePosicao(vector<pair<int,int> >);
   void inicializaMatriz();
   pair<int,int> getRei();
@@ -574,7 +574,7 @@ void Processamento::recebeEntrada(){
 		cin.ignore();
 		entrada.push_back(jogada);
 	}
-	convertePosicao(entrada);
+	convertePosicao();
   //inicializaMatriz();
   //finaliza();
 }
@@ -591,11 +591,11 @@ void Processamento::mostraSaida(vector< pair<string,int> > vec){
 	}
 }
 
-void Processamento::convertePosicao(vector<string> jogadas){
+void Processamento::convertePosicao(){
 	pair<int, int> par;
-
-	for (int i = 0; i < jogadas.size(); ++i){
-		par = make_pair(jogadas[i][1],jogadas[i][0]);
+	for (int i = 0; i < 5; ++i){
+		par = make_pair(entrada[i][1],entrada[i][0]);
+    //cout << "par" << par.first << par.second << endl;
 		coordenadas.push_back(par);
 	}
 
@@ -632,11 +632,18 @@ void Processamento::invertePosicao(vector<pair<int,int> > jogadas){
 }
 
 pair<int,int> Processamento::getRei(){
-  return coordenadas[3];
+  return coordenadas[4];
 }
 
 void Processamento::inicializaMatriz(){
   pair<int,int> rei = getRei();
+  cout << rei.first << ":" << rei.second << endl;
+
+  for(int i=0;i< 5;i++){
+    cout << coordenadas[i].first << " : " << coordenadas[i].second << endl;
+  }
+
+
   for(int i=0;i<4;i++){
     mat[i].inicializa();
     mat[i].preenche();
@@ -668,9 +675,9 @@ void Processamento::finaliza(){
     j++;
   }
 
-  /*for(int i =0;i<menor.size();i++){
+  for(int i =0;i<menor.size();i++){
      mat[menor[i]].saidaMatriz();
-  }*/
+  }
 
 }
 /* corpo principal */
