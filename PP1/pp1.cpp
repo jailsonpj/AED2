@@ -424,8 +424,6 @@ private:
 public:
   Matriz();
   void inicializa();
-  void adicionaCavalo(int l,int c);
-  void adicionaRei(int l,int c);
   void mapeaRei(int l,int c,int lr,int cr);
   void mapeaCavalo(int l,int c);
   void preenche();
@@ -469,14 +467,6 @@ void Matriz::mostraMatriz(){
     cout <<endl;
   }
   cout << endl;
-}
-
-void Matriz::adicionaCavalo(int l,int c){
-  mat[l][c] = 1;
-}
-
-void Matriz::adicionaRei(int l,int c){
-  mat[l][c] = 2;
 }
 
 int Matriz::getMenor(){
@@ -529,15 +519,18 @@ void Matriz::mapeaRei(int l,int c,int lr,int cr){
 }
 
 void Matriz::saidaMatriz() {
+  //vector<pair<int,int> > out;
   cout << menor << '\t';
   ext = bfs.getCaminho();
   for(int i=ext.size()-1;i >=0;i--){
     pair<int,int> pares;
     //cout << ext[i] << '\t';
     pares = grafo_tabuleiro[ext[i]];
+    //out.push_back(pares);
     cout << pares.first <<":" << pares.second << '\t';
   }
   cout << endl;
+  //return out;
 }
 
 class Processamento{
