@@ -431,7 +431,7 @@ public:
   void preenche();
   void mostraMatriz();
   int getMenor();
-  void saida();
+  void saidaMatriz();
 };
 Matriz::Matriz(){}
 void Matriz::inicializa(){
@@ -514,7 +514,7 @@ void Matriz::mapeaRei(int l,int c,int lr,int cr){
       }
   }
     g.ordena();
-    g.print();
+    //g.print();
     //BFS bfs;
     int inicio = tabuleiro_grafo[{l,c}];
 		//cout << tabuleiro_grafo[{l,c}] << endl;
@@ -522,13 +522,13 @@ void Matriz::mapeaRei(int l,int c,int lr,int cr){
     //bfs.mostraBFS();
     bfs.menorCaminho();
     menor = bfs.getD(bfs.getAchado());
-
+    cout << menor << endl;
     //cout << menor <<endl;
   //  bfs.mostraMenorCaminho();
   //  g.print();
 }
 
-void Matriz::saida() {
+void Matriz::saidaMatriz() {
   cout << menor << '\t';
   ext = bfs.getCaminho();
   for(int i=ext.size()-1;i >=0;i--){
@@ -540,47 +540,146 @@ void Matriz::saida() {
   cout << endl;
 }
 
+class Processamento{
+private:
+	vector<int> numeros {NIL, 49, 50, 51, 52, 53, 54, 55, 56}; //1,2,3...
+	vector<int> letras {NIL, 97, 98, 99, 100, 101, 102, 103, 104};//a,b,c,d...
+	vector<pair<int, int> > coordenadas;
+	vector<pair<string,int> > saida;
+	vector<string> entrada; // vector com as posicoes dos cavalos e rei
+  vector<pair<int,int> > minimo;
+  vector<int> menor;
+  Matriz mat[4];
+	string jogada; //posicao de cada cavalo e do rei
+
+public:
+	Processamento();
+	void recebeEntrada();
+	void mostraEntrada(vector<pair<int,int> >);
+	void mostraSaida(vector<pair<string,int> >);
+	void convertePosicao(vector<string>);
+	void invertePosicao(vector<pair<int,int> >);
+  void inicializaMatriz();
+  pair<int,int> getRei();
+  void finaliza();
+};
+
+Processamento::Processamento(){
+	recebeEntrada();
+}
+
+void Processamento::recebeEntrada(){
+	for(int i = 0; i < 5; ++i){
+		cin >> jogada;
+		cin.ignore();
+		entrada.push_back(jogada);
+	}
+	convertePosicao(entrada);
+  //inicializaMatriz();
+  //finaliza();
+}
+
+void Processamento::mostraEntrada(vector< pair<int,int> > vec){
+	for ( vector <pair<int,int> >::const_iterator it = vec.begin(); it != vec.end (); it++){
+		cout << it->first << it->second << endl;
+	}
+}
+
+void Processamento::mostraSaida(vector< pair<string,int> > vec){
+	for ( vector <pair<string,int> >::const_iterator it = vec.begin(); it != vec.end (); it++){
+		cout << it->first << it->second << endl;
+	}
+}
+
+void Processamento::convertePosicao(vector<string> jogadas){
+	pair<int, int> par;
+
+	for (int i = 0; i < jogadas.size(); ++i){
+		par = make_pair(jogadas[i][1],jogadas[i][0]);
+		coordenadas.push_back(par);
+	}
+
+	for (int i = 0; i < coordenadas.size(); ++i){
+		for (int j = 1; j <= numeros.size(); ++j){
+			if(coordenadas[i].first == numeros[j]){
+				coordenadas[i].first=j;
+			}
+		}
+	}
+
+	for (int i = 0; i < coordenadas.size(); ++i){
+		for (int j = 1; j <= letras.size(); ++j){
+			if(coordenadas[i].second == letras[j]){
+				coordenadas[i].second=j;
+			}
+		}
+	}
+
+}
+
+void Processamento::invertePosicao(vector<pair<int,int> > jogadas){
+	pair<string, int> par;
+
+	for (int i = 0; i < jogadas.size(); ++i){
+		for (int j = 1; j <= letras.size(); ++j){
+			if(jogadas[i].second == j){
+				par = make_pair(letras[j],jogadas[i].first);
+				saida.push_back(par);
+			}
+		}
+	}
+	mostraSaida(saida);
+}
+
+pair<int,int> Processamento::getRei(){
+  return coordenadas[3];
+}
+
+void Processamento::inicializaMatriz(){
+  pair<int,int> rei = getRei();
+  for(int i=0;i<4;i++){
+    mat[i].inicializa();
+    mat[i].preenche();
+    mat[i].mapeaRei(coordenadas[i].first,coordenadas[i].second,rei.first,rei.second);
+    minimo.push_back({mat[i].getMenor(),i});
+  }
+}
+
+void Processamento::finaliza(){
+  int aux = minimo[0].first;
+  int i = 1;
+  int it;
+  int j = 0;
+  while( i <= minimo.size()){
+    if(minimo[i].first < aux ){
+        aux = minimo[i].first;
+        it = i;
+    }
+    i++;
+  }
+
+  menor.push_back(minimo[it].second);
+  while(j < minimo.size()){
+    if(j != it){
+      if(aux == minimo[j].first){
+        menor.push_back(minimo[j].second);
+      }
+    }
+    j++;
+  }
+
+  /*for(int i =0;i<menor.size();i++){
+     mat[menor[i]].saidaMatriz();
+  }*/
+
+}
 /* corpo principal */
 int main(int argc, char const *argv[]) {
 
-vector<pair<int,int> > minimo;
-vector<int> menor;
-vector<pair<int,int> > cord {{1,1},{1,8},{7,3},{8,5}};
-Matriz mat[4];
-
-
-for(int i=0;i<4;i++){
-  mat[i].inicializa();
-  mat[i].preenche();
-  mat[i].mapeaRei(cord[i].first,cord[i].second,4,5);
-  minimo.push_back({mat[i].getMenor(),i});
-}
-
-int aux = minimo[0].first;
-int i = 1;
-int it;
-int j = 0;
-while( i <= minimo.size()){
-  if(minimo[i].first < aux ){
-      aux = minimo[i].first;
-      it = i;
-  }
-  i++;
-}
-
-menor.push_back(minimo[it].second);
-while(j < minimo.size()){
-  if(j != it){
-    if(aux == minimo[j].first){
-      menor.push_back(minimo[j].second);
-    }
-  }
-  j++;
-}
-
-for(int i =0;i<menor.size();i++){
-   mat[menor[i]].saida();
-}
+  Processamento xadrez;
+  xadrez.recebeEntrada();
+  xadrez.inicializaMatriz();
+  xadrez.finaliza();
 
   return 0;
 }
