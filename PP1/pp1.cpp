@@ -418,7 +418,7 @@ private:
   vector<vector<int> > mat;
   pair<int,int> grafo_tabuleiro[64];
   map<pair<int,int>,int> tabuleiro_grafo;
-  vector<int> ext;
+  vector<int> ext; //vetor do caminho
   int menor;
   BFS bfs;
 public:
@@ -430,6 +430,8 @@ public:
   void mostraMatriz();
   int getMenor();
   void saidaMatriz();
+  pair<int,int> getGrafoTabuleiro(int );
+  vector<int> getExt();
 };
 Matriz::Matriz(){}
 void Matriz::inicializa(){
@@ -512,13 +514,22 @@ void Matriz::mapeaRei(int l,int c,int lr,int cr){
     //bfs.mostraBFS();
     bfs.menorCaminho();
     menor = bfs.getD(bfs.getAchado());
+    ext = bfs.getCaminho();
     //cout << menor << endl;
     //cout << menor <<endl;
   //  bfs.mostraMenorCaminho();
   //  g.print();
 }
 
-void Matriz::saidaMatriz() {
+pair<int,int> Matriz::getGrafoTabuleiro(int i){
+  return grafo_tabuleiro[i];
+}
+
+vector<int> Matriz::getExt(){
+  return ext;
+}
+
+/*void Matriz::saidaMatriz() {
   //vector<pair<int,int> > out;
   cout << menor << '\t';
   ext = bfs.getCaminho();
@@ -531,7 +542,7 @@ void Matriz::saidaMatriz() {
   }
   cout << endl;
   //return out;
-}
+}*/
 
 class Processamento{
 private:
@@ -555,10 +566,11 @@ public:
   void inicializaMatriz();
   pair<int,int> getRei();
   void finaliza();
+  void finalizaMostra();
 };
 
 Processamento::Processamento(){
-	recebeEntrada();
+	//recebeEntrada();
 }
 
 void Processamento::recebeEntrada(){
@@ -630,13 +642,11 @@ pair<int,int> Processamento::getRei(){
 
 void Processamento::inicializaMatriz(){
   pair<int,int> rei = getRei();
-  cout << rei.first << ":" << rei.second << endl;
+  /*cout << rei.first << ":" << rei.second << endl;
 
-  for(int i=0;i< 5;i++){
+  for(int i=0;i<coordenadas.size();i++){
     cout << coordenadas[i].first << " : " << coordenadas[i].second << endl;
-  }
-
-
+  }*/
   for(int i=0;i<4;i++){
     mat[i].inicializa();
     mat[i].preenche();
@@ -646,33 +656,37 @@ void Processamento::inicializaMatriz(){
 }
 
 void Processamento::finaliza(){
+
   int aux = minimo[0].first;
-  int i = 1;
   int it;
-  int j = 0;
-  while( i <= minimo.size()){
+  for(int i=1;i<=minimo.size()-1;i++ ){
     if(minimo[i].first < aux ){
         aux = minimo[i].first;
         it = i;
     }
-    i++;
   }
-
   menor.push_back(minimo[it].second);
-  while(j < minimo.size()){
+  for(int j=0;j<minimo.size();j++){
     if(j != it){
       if(aux == minimo[j].first){
         menor.push_back(minimo[j].second);
       }
     }
-    j++;
   }
-
-  for(int i =0;i<menor.size();i++){
-     mat[menor[i]].saidaMatriz();
-  }
-
+  cout << menor.size() << endl;
 }
+
+void Processamento::finalizaMostra(){
+  for(int i =0;i<menor.size();i++){
+     cout << mat[menor[i]].getMenor() << '\t';
+     for(int j=mat[menor[i]].getExt().size()-1; j>=0 ; j--){
+      pair<int,int> p = mat[menor[i]].getGrafoTabuleiro(mat[menor[i]].getExt()[j]);
+      cout << p.first << ":" << p.second << '\t';
+     }
+     cout << endl;
+  }
+}
+
 /* corpo principal */
 int main(int argc, char const *argv[]) {
 
@@ -680,6 +694,7 @@ int main(int argc, char const *argv[]) {
   xadrez.recebeEntrada();
   xadrez.inicializaMatriz();
   xadrez.finaliza();
+  xadrez.finalizaMostra();
 
   return 0;
 }
