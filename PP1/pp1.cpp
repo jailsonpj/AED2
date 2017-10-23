@@ -6,8 +6,6 @@
 
 typedef int Vertex;
 enum Cores {BRANCO,CINZA,PRETO};
-
-//enum Pos {a=1,b=2,c=3,d=4,e=5,f=6,g=7,h=8};
 int TEMPO;
 using namespace std;
 
@@ -310,7 +308,6 @@ public:
   void menorCaminho();
   int getAchado();
   vector<int> getCaminho();
-  void mostraMenorCaminho();
 };
 BFS::BFS(){ }
 void BFS::run(Grafo &g,int s,int c){
@@ -364,8 +361,6 @@ void BFS::bfs(Grafo &g,int s,int c){
           cor[v] = CINZA;
           d[v] = d[u] + 1;
           if(v == c){
-            //return d[v];
-            //cout << d[v] << endl;
             achado = u;
           }
           pred[v] = u;
@@ -380,39 +375,25 @@ void BFS::mostraBFS(){
 cout << "Vertex - Predecessor - Distancia " << endl;
   for( int i = 0; i <= 64; i ++) {
       cout << vertex[i] << " [] " << pred[i] <<" [] " << d[i] << endl;
-
   }
 
 }
 
 void BFS::menorCaminho(){
-
   int i = achado;
-  //cout << d[i] <<'\t';
   caminho.push_back(i);
   while (pred[i] != -1) {
       int u = pred[i];
       caminho.push_back(u);
-      //cout << u <<'\t';
       i = u;
   }
-/*  for(int i=0;i<caminho.size();i++){
-    cout << caminho[i] << endl;
-  }*/
-  //return caminho;
 }
 
 vector<int> BFS::getCaminho(){
   return caminho;
 }
-/*void BFS::mostraMenorCaminho(){
-  cout << d[achado] <<'\t';
-  for(int i=0;i<caminho.size();i++){
-      cout << caminho[i] <<'\t';
-    }
-    cout << endl;
-}*/
 
+/*classe responsavel pela criação das matrizes de movimentos e a BFS de cada cavalo*/
 class Matriz{
 private:
   vector<vector<int> > mat;
@@ -425,7 +406,6 @@ public:
   Matriz();
   void inicializa();
   void mapeaRei(int l,int c,int lr,int cr);
-  void mapeaCavalo(int l,int c);
   void preenche();
   void mostraMatriz();
   int getMenor();
@@ -506,19 +486,11 @@ void Matriz::mapeaRei(int l,int c,int lr,int cr){
       }
   }
     g.ordena();
-    //g.print();
-    //BFS bfs;
     int inicio = tabuleiro_grafo[{l,c}];
-		//cout << tabuleiro_grafo[{l,c}] << endl;
     bfs.run(g,inicio,tabuleiro_grafo[{lr,cr}]);
-    //bfs.mostraBFS();
     bfs.menorCaminho();
     menor = bfs.getD(bfs.getAchado());
     ext = bfs.getCaminho();
-    //cout << menor << endl;
-    //cout << menor <<endl;
-  //  bfs.mostraMenorCaminho();
-  //  g.print();
 }
 
 pair<int,int> Matriz::getGrafoTabuleiro(int i){
@@ -529,27 +501,12 @@ vector<int> Matriz::getExt(){
   return ext;
 }
 
-/*void Matriz::saidaMatriz() {
-  //vector<pair<int,int> > out;
-  cout << menor << '\t';
-  ext = bfs.getCaminho();
-  for(int i=ext.size()-1;i >=0;i--){
-    pair<int,int> pares;
-    //cout << ext[i] << '\t';
-    pares = grafo_tabuleiro[ext[i]];
-    //out.push_back(pares);
-    cout << pares.first <<":" << pares.second << '\t';
-  }
-  cout << endl;
-  //return out;
-}*/
-
+/*Classe responsavel pelo Processamento da entrada e saida do projeto*/
 class Processamento{
 private:
 	vector<int> numeros {NIL, 49, 50, 51, 52, 53, 54, 55, 56}; //1,2,3...
 	vector<int> letras {NIL, 97, 98, 99, 100, 101, 102, 103, 104};//a,b,c,d...
 	vector<pair<int, int> > coordenadas;
-	vector<pair<string,int> > saida;
 	vector<string> entrada; // vector com as posicoes dos cavalos e rei
   vector<pair<int,int> > minimo;
   vector<int> menor;
@@ -559,10 +516,8 @@ private:
 public:
 	Processamento();
 	void recebeEntrada();
-	void mostraEntrada(vector<pair<int,int> >);
-	void mostraSaida(vector<pair<string,int> >);
 	void convertePosicao();
-	void invertePosicao(vector<pair<int,int> >);
+	pair<string,int> invertePosicao(pair<int,int> );
   void inicializaMatriz();
   pair<int,int> getRei();
   void finaliza();
@@ -570,7 +525,6 @@ public:
 };
 
 Processamento::Processamento(){
-	//recebeEntrada();
 }
 
 void Processamento::recebeEntrada(){
@@ -580,27 +534,12 @@ void Processamento::recebeEntrada(){
 		entrada.push_back(jogada);
 	}
 	convertePosicao();
-  //inicializaMatriz();
-  //finaliza();
-}
-
-void Processamento::mostraEntrada(vector< pair<int,int> > vec){
-	for ( vector <pair<int,int> >::const_iterator it = vec.begin(); it != vec.end (); it++){
-		cout << it->first << it->second << endl;
-	}
-}
-
-void Processamento::mostraSaida(vector< pair<string,int> > vec){
-	for ( vector <pair<string,int> >::const_iterator it = vec.begin(); it != vec.end (); it++){
-		cout << it->first << it->second << endl;
-	}
 }
 
 void Processamento::convertePosicao(){
 	pair<int, int> par;
 	for (int i = 0; i < 5; ++i){
 		par = make_pair(entrada[i][1],entrada[i][0]);
-    //cout << "par" << par.first << par.second << endl;
 		coordenadas.push_back(par);
 	}
 
@@ -622,18 +561,16 @@ void Processamento::convertePosicao(){
 
 }
 
-void Processamento::invertePosicao(vector<pair<int,int> > jogadas){
+pair<string,int> Processamento::invertePosicao(pair<int,int> p){
 	pair<string, int> par;
-
-	for (int i = 0; i < jogadas.size(); ++i){
 		for (int j = 1; j <= letras.size(); ++j){
-			if(jogadas[i].second == j){
-				par = make_pair(letras[j],jogadas[i].first);
-				saida.push_back(par);
+			if(p.second == j){
+				par = make_pair(letras[j],p.first);
+				//saida.push_back(par);
+        return par;
 			}
 		}
-	}
-	mostraSaida(saida);
+
 }
 
 pair<int,int> Processamento::getRei(){
@@ -642,11 +579,6 @@ pair<int,int> Processamento::getRei(){
 
 void Processamento::inicializaMatriz(){
   pair<int,int> rei = getRei();
-  /*cout << rei.first << ":" << rei.second << endl;
-
-  for(int i=0;i<coordenadas.size();i++){
-    cout << coordenadas[i].first << " : " << coordenadas[i].second << endl;
-  }*/
   for(int i=0;i<4;i++){
     mat[i].inicializa();
     mat[i].preenche();
@@ -673,7 +605,6 @@ void Processamento::finaliza(){
       }
     }
   }
-  cout << menor.size() << endl;
 }
 
 void Processamento::finalizaMostra(){
@@ -681,7 +612,8 @@ void Processamento::finalizaMostra(){
      cout << mat[menor[i]].getMenor() << '\t';
      for(int j=mat[menor[i]].getExt().size()-1; j>=0 ; j--){
       pair<int,int> p = mat[menor[i]].getGrafoTabuleiro(mat[menor[i]].getExt()[j]);
-      cout << p.first << ":" << p.second << '\t';
+      pair<string,int> q = invertePosicao(p);
+      cout << q.first << q.second << '\t';
      }
      cout << endl;
   }
