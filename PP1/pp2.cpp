@@ -191,7 +191,6 @@ class Grafo{ //não direcionado
   Lista<Vertex> *adj;
   int n,m; //ordem e tamanho
   //void destroy();
-
 public:
   Grafo(int); //construtor
   void initialize(int);
@@ -380,6 +379,7 @@ public:
   vector<int> getExt();
   int particao(vector<int> &v, int p, int r);
   void quicksort(vector<int> &v, int p, int r);
+  void bolha(vector<int>&v);
 };
 Matriz::Matriz(){}
 void Matriz::inicializa(){
@@ -440,6 +440,7 @@ int Matriz::particao(vector<int> &v, int p, int r){
 
 		if(i < j){
 			swap(v[i], v[j]);
+      cout << "entrou" << endl;
 		}
 		else{
 			swap(v[p],v[j]);
@@ -452,6 +453,7 @@ int Matriz::particao(vector<int> &v, int p, int r){
 void Matriz::quicksort(vector<int> &v, int p, int r){
 	int q;
 	if(p < r){
+    cout << "FOi" << endl;
 		q = particao(v, p, r);
 		quicksort(v, p, q-1);
 		quicksort(v, q+1, r);
@@ -487,22 +489,20 @@ void Matriz::mapeaRei(int l,int c,int lr,int cr){
           }
         }
       }
-      //Aqui
-    quicksort(ent,0,ent.size()-1);
+    bolha(ent);
     for(int j=0;j<ent.size();j++){
       g.insertEdge(tabuleiro_grafo[cord2],ent[j]);
     }
-
   }
 
     g.print();
-    int inicio = tabuleiro_grafo[{l,c}];
+    //int inicio = tabuleiro_grafo[{l,c}];
     //cout << inicio << endl;
-    bfs.run(g,inicio,tabuleiro_grafo[{lr,cr}]);
+    //bfs.run(g,inicio,tabuleiro_grafo[{lr,cr}]);
     //bfs.mostraBFS(); Tá pegando
     //bfs.menorCaminho(); Tá pegando
-    menor = bfs.getD(bfs.getAchado());
-    cout << menor << endl;
+    //menor = bfs.getD(bfs.getAchado());
+    //cout << menor << endl;
     //ext = bfs.getCaminho();
   }
 
@@ -515,7 +515,7 @@ vector<int> Matriz::getExt(){
 }
 
 //classe entrada e saída
-/*class Processamento{
+class Processamento{
 private:
 	vector<int> numeros {NIL, 49, 50, 51, 52, 53, 54, 55, 56}; //1,2,3...
 	vector<int> letras {NIL, 97, 98, 99, 100, 101, 102, 103, 104};//a,b,c,d...
@@ -631,15 +631,13 @@ void Processamento::finalizaMostra(){
      cout << endl;
   }
 }
-*/
+
 
 int main(int argc, char const *argv[]) {
 
-  Matriz mat;
-  mat.inicializa();
-  mat.preenche();
-  mat.mapeaRei(1,8,4,5);
-  mat.mostraMatriz();
+  Processamento xadrez;
+  xadrez.recebeEntrada();
+  xadrez.inicializaMatriz();
 
 
   return 0;
