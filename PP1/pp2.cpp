@@ -624,10 +624,6 @@ void Entrada::inicia(){
 
 int main(int argc, char const *argv[]) {
   Entrada xadrez;
-	int qtdVezes;
-	cin >> qtdVezes;
-	for(int i=0; i<qtdVezes; i++){
   xadrez.inicia();
-	}
   return 0;
 }
