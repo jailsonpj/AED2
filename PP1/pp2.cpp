@@ -2,7 +2,6 @@
 #include <cstdlib>
 #include <vector>
 #include <climits>
-#include <cmath>
 #include <map>
 #define NIL -1
 
@@ -11,12 +10,12 @@ enum Cores {BRANCO,CINZA,PRETO};
 int TEMPO;
 using namespace std;
 
-//Classe Nó
+
 template <class T>
 class No{
 private:
-  T item; //vetor de itens
-  No* prox; //ponteiro para o proximo item
+  T item;
+  No* prox;
 public:
   No(){
     this->prox = NULL;
@@ -43,12 +42,10 @@ public:
   }
 };
 
-//classe fila
 template<class T>
 class Fila{
 private:
 	No<T> *frente, *tras;
-	//int TAM;
 public:
 	Fila();
 	void enfileira(T);
@@ -108,17 +105,15 @@ bool Fila<T>::vazia(){
   }
 }
 
-//Classe Lista
 template <class T>
 class Lista{
 private:
   No <T> *prim;
   No <T> *ult;
   int tamLista = 0;
-  //No <T> *pred(No<T>*);
 public:
   Lista(){
-    prim = new No <T>; //Nó cabeça
+    prim = new No <T>;
     prim->setProx(NULL);
     ult = prim;
   }
@@ -172,7 +167,7 @@ int Lista<T>::gettamLista(){
 }
 
 template <class T>
-int Lista<T>::busca(Vertex i){ //busca um elemento na lista de adjacencia em um determinado indice
+int Lista<T>::busca(Vertex i){
     No<T> *p = getPrim()->getProx();
     int cont = 1;
     Vertex achou;
@@ -187,13 +182,12 @@ int Lista<T>::busca(Vertex i){ //busca um elemento na lista de adjacencia em um 
     return achou;
 }
 
-//Grafo
-class Grafo{ //não direcionado
+
+class Grafo{
   Lista<Vertex> *adj;
-  int n,m; //ordem e tamanho
-  //void destroy();
+  int n,m;
 public:
-  Grafo(int); //construtor
+  Grafo(int);
   void initialize(int);
   void insertEdge(Vertex,Vertex);
   void print();
@@ -213,23 +207,21 @@ void Grafo::initialize(int n){
 }
 
 void Grafo::insertEdge(Vertex u, Vertex v){
-  Vertex x = {v}; //chave = vértice
-  adj[u].insere(x); //Insere na Lista
-  /*x = {u};
-  adj[v].insere(x); //Insere na Lista*/
+  Vertex x = {v};
+  adj[u].insere(x);
   m++;
 }
 
 void Grafo::print(){
   for(int i= 1; i<= n; i++){
     cout <<"v[" << i << "] = ";
-    adj[i].mostra(); // Imprime elemento da lista
+    adj[i].mostra();
   }
 }
 
 void Grafo::destroy(){
   for(int i = 0;i <= n; i++){
-    adj[i].destroy(); // Destroi Lista
+    adj[i].destroy();
   }
   delete(adj);
   n = m = 0;
@@ -247,7 +239,6 @@ int Grafo::getM(){
   return m;
 }
 
-/*Classe Busca em Largura*/
 class BFS{
 private:
   int *pred;
@@ -400,16 +391,14 @@ void Ordenacao::quicksort(vector<int> &v, int p, int r){
 	}
 }
 
-/*classe responsavel pela criação das matrizes de movimentos e a BFS de cada cavalo*/
 class Matriz{
 private:
   vector<vector<int> > mat;
   pair<int,int> grafo_tabuleiro[64];
   map<pair<int,int>,int> tabuleiro_grafo;
-  vector<int> ext; //vetor do caminho
+  vector<int> ext;
   int menor;
   BFS bfs;
-  //Ordena ord;
 public:
   Matriz();
   void inicializa();
@@ -485,7 +474,7 @@ void Matriz::mapeaRei(int l,int c,int lr,int cr){
   while(fila.vazia()){
     pair<int,int> cord2;
     cord2 = fila.desenfileira();
-    vector<int> ent; //vector para as entradas
+    vector<int> ent;
       for(int i=0;i<=8;i++){
         l1 = cord2.first + di[i];
         c1 = cord2.second +dj[i];
@@ -504,16 +493,9 @@ void Matriz::mapeaRei(int l,int c,int lr,int cr){
       g.insertEdge(tabuleiro_grafo[cord2],ent[j]);
     }
   }
-
-    //g.print();
     int inicio = tabuleiro_grafo[{l,c}];
-    //cout << inicio << endl;
     bfs.run(g,inicio,tabuleiro_grafo[{lr,cr}]);
-    //bfs.mostraBFS(); Tá pegando
-    //bfs.menorCaminho(); //Tá pegando
     menor = bfs.getD(bfs.getAchado());
-    //cout << menor << endl;
-    //ext = bfs.getCaminho();
   }
 
 pair<int,int> Matriz::getGrafoTabuleiro(int i){
@@ -524,17 +506,16 @@ vector<int> Matriz::getExt(){
   return ext;
 }
 
-//classe entrada e saída
 class Processamento{
 private:
-	vector<int> numeros {NIL, 49, 50, 51, 52, 53, 54, 55, 56}; //1,2,3...
-	vector<int> letras {NIL, 97, 98, 99, 100, 101, 102, 103, 104};//a,b,c,d...
+	vector<int> numeros {NIL, 49, 50, 51, 52, 53, 54, 55, 56};
+	vector<int> letras {NIL, 97, 98, 99, 100, 101, 102, 103, 104};
 	vector<pair<int, int> > coordenadas;
-	vector<string> entrada; // vector com as posicoes dos cavalos e rei
+	vector<string> entrada;
   vector<pair<int,int> > minimo;
   vector<int> menor;
   Matriz mat[4];
-	string jogada; //posicao de cada cavalo e do rei
+	string jogada;
 
 public:
 	Processamento();
@@ -635,21 +616,13 @@ Entrada::Entrada(){
 
 void Entrada::inicia(){
   Processamento xadrez;
-
-  //for(int i=0;i<2;i++){
-      xadrez.recebeEntrada();
-      xadrez.inicializaMatriz();
-      xadrez.finaliza();
-      xadrez.finalizaMostra();
-  //}
+  xadrez.recebeEntrada();
+  xadrez.inicializaMatriz();
+  xadrez.finaliza();
+  xadrez.finalizaMostra();
 }
 
 int main(int argc, char const *argv[]) {
-
-  /*Processamento xadrez;
-  xadrez.recebeEntrada();
-  xadrez.inicializaMatriz();*/
-
   Entrada xadrez;
   xadrez.inicia();
 
