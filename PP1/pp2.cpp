@@ -286,7 +286,6 @@ void BFS::bfs(Grafo &g,int s,int c){
   pred = new int[N];
   cor = new Cores[N];
   d = new int[N];
-  Vertex r;
 
   for(int i = 0;i<=N;i++){
     vertex[i] = i;
@@ -339,10 +338,6 @@ void BFS::menorCaminho(){
       i = u;
   }
 
-  for(int j=0;j<caminho.size();j++){
-    cout << caminho[j] << '\t';
-  }
-  cout << '\n';
 }
 
 vector<int> BFS::getCaminho(){
@@ -456,14 +451,13 @@ int Matriz::getMenor(){
 
 void Matriz::ordena(vector<int> &v){
   Ordenacao orde;
-  orde.quicksort(v,0,v.size()-1);
+  orde.quicksort(v,0,(int) v.size()-1);
 }
 
 void Matriz::mapeaRei(int l,int c,int lr,int cr){
   vector<int> di = {-1,+1,-2,+2,-2,-2,+2,-1,+1};
   vector<int> dj = {-2,-2,-1,-1,-1,+1,+1,+2,+2};
   int l1,c1;
-  int cont = 0;
   mat[l][c] = 3;
   Fila<pair<int,int> > fila;
   pair<int,int> cord1;
@@ -489,7 +483,7 @@ void Matriz::mapeaRei(int l,int c,int lr,int cr){
         }
       }
     ordena(ent);
-    for(int j=0;j<ent.size();j++){
+    for(int j=0;j< (int) ent.size();j++){
       g.insertEdge(tabuleiro_grafo[cord2],ent[j]);
     }
   }
@@ -546,16 +540,16 @@ void Processamento::convertePosicao(){
 		coordenadas.push_back(par);
 	}
 
-	for (int i = 0; i < coordenadas.size(); ++i){
-		for (int j = 1; j <= numeros.size(); ++j){
+	for (int i = 0; i < (int)coordenadas.size(); ++i){
+		for (int j = 1; j <= (int) numeros.size(); ++j){
 			if(coordenadas[i].first == numeros[j]){
 				coordenadas[i].first=j;
 			}
 		}
 	}
 
-	for (int i = 0; i < coordenadas.size(); ++i){
-		for (int j = 1; j <= letras.size(); ++j){
+	for (int i = 0; i < (int) coordenadas.size(); ++i){
+		for (int j = 1; j <= (int) letras.size(); ++j){
 			if(coordenadas[i].second == letras[j]){
 				coordenadas[i].second=j;
 			}
@@ -582,14 +576,14 @@ void Processamento::finaliza(){
 
   int aux = minimo[0].first;
   int it;
-  for(int i=1;i<=minimo.size()-1;i++ ){
+  for(int i=1;i<= (int) minimo.size()-1;i++ ){
     if(minimo[i].first < aux ){
         aux = minimo[i].first;
         it = i;
     }
   }
   menor.push_back(minimo[it].second);
-  for(int j=0;j<minimo.size();j++){
+  for(int j=0;j< (int) minimo.size();j++){
     if(j != it){
       if(aux == minimo[j].first){
         menor.push_back(minimo[j].second);
@@ -599,8 +593,8 @@ void Processamento::finaliza(){
 }
 
 void Processamento::finalizaMostra(){
-  for(int i =0;i<menor.size();i++){
-     cout << mat[menor[i]].getMenor() << '\t';
+  for(int i=0; i < (int) menor.size();i++){
+     cout << mat[menor[i]].getMenor() << " ";
   }
   cout << endl;
 }
@@ -615,11 +609,17 @@ Entrada::Entrada(){
 }
 
 void Entrada::inicia(){
-  Processamento xadrez;
-  xadrez.recebeEntrada();
-  xadrez.inicializaMatriz();
-  xadrez.finaliza();
-  xadrez.finalizaMostra();
+  string cont;
+  int n;
+  cin >> cont;
+  n = atoi(cont.c_str());
+  Processamento xadrez[n];
+  for(int i=0;i<n;i++){
+    xadrez[i].recebeEntrada();
+    xadrez[i].inicializaMatriz();
+    xadrez[i].finaliza();
+    xadrez[i].finalizaMostra();
+  }
 }
 
 int main(int argc, char const *argv[]) {
