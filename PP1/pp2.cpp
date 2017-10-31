@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <vector>
 #include <climits>
+#include <cmath>
 #include <map>
 #define NIL -1
 
@@ -214,8 +215,8 @@ void Grafo::initialize(int n){
 void Grafo::insertEdge(Vertex u, Vertex v){
   Vertex x = {v}; //chave = vértice
   adj[u].insere(x); //Insere na Lista
-  x = {u};
-  adj[v].insere(x); //Insere na Lista
+  /*x = {u};
+  adj[v].insere(x); //Insere na Lista*/
   m++;
 }
 
@@ -357,6 +358,48 @@ vector<int> BFS::getCaminho(){
   return caminho;
 }
 
+class Ordenacao{
+public:
+  Ordenacao();
+  int particao(vector<int> &v, int p, int r);
+  void quicksort(vector<int> &v, int p, int r);
+};
+Ordenacao::Ordenacao(){}
+int Ordenacao::particao(vector<int> &v, int p, int r){
+	int x = v[p], tmp = v[r+1];
+	v[r+1] = x;
+
+	int i = p, j = r+1;
+
+	while(true){
+		do{
+			i = i+1;
+		}while(v[i] < x);
+
+		do{
+			j = j-1;
+		}while(v[j] > x);
+
+		if(i < j){
+			swap(v[i], v[j]);
+		}
+		else{
+			swap(v[p],v[j]);
+			v[r+1] = tmp;
+			return j;
+		}
+	}
+}
+
+void Ordenacao::quicksort(vector<int> &v, int p, int r){
+	int q;
+	if(p < r){
+		q = particao(v, p, r);
+		quicksort(v, p, q-1);
+		quicksort(v, q+1, r);
+	}
+}
+
 /*classe responsavel pela criação das matrizes de movimentos e a BFS de cada cavalo*/
 class Matriz{
 private:
@@ -377,9 +420,8 @@ public:
   void saidaMatriz();
   pair<int,int> getGrafoTabuleiro(int );
   vector<int> getExt();
-  int particao(vector<int> &v, int p, int r);
-  void quicksort(vector<int> &v, int p, int r);
-  void bolha(vector<int>&v);
+  void ordena(vector<int> &v);
+
 };
 Matriz::Matriz(){}
 void Matriz::inicializa(){
@@ -423,41 +465,9 @@ int Matriz::getMenor(){
   return menor;
 }
 
-int Matriz::particao(vector<int> &v, int p, int r){
-	int x = v[p], tmp = v[r+1];
-	v[r+1] = x;
-
-	int i = p, j = r+1;
-
-	while(true){
-		do{
-			i = i+1;
-		}while(v[i] < x);
-
-		do{
-			j = j-1;
-		}while(v[j] > x);
-
-		if(i < j){
-			swap(v[i], v[j]);
-      cout << "entrou" << endl;
-		}
-		else{
-			swap(v[p],v[j]);
-			v[r+1] = tmp;
-			return j;
-		}
-	}
-}
-
-void Matriz::quicksort(vector<int> &v, int p, int r){
-	int q;
-	if(p < r){
-    cout << "FOi" << endl;
-		q = particao(v, p, r);
-		quicksort(v, p, q-1);
-		quicksort(v, q+1, r);
-	}
+void Matriz::ordena(vector<int> &v){
+  Ordenacao orde;
+  orde.quicksort(v,0,v.size()-1);
 }
 
 void Matriz::mapeaRei(int l,int c,int lr,int cr){
@@ -489,20 +499,20 @@ void Matriz::mapeaRei(int l,int c,int lr,int cr){
           }
         }
       }
-    bolha(ent);
+    ordena(ent);
     for(int j=0;j<ent.size();j++){
       g.insertEdge(tabuleiro_grafo[cord2],ent[j]);
     }
   }
 
     g.print();
-    //int inicio = tabuleiro_grafo[{l,c}];
+    int inicio = tabuleiro_grafo[{l,c}];
     //cout << inicio << endl;
-    //bfs.run(g,inicio,tabuleiro_grafo[{lr,cr}]);
+    bfs.run(g,inicio,tabuleiro_grafo[{lr,cr}]);
     //bfs.mostraBFS(); Tá pegando
-    //bfs.menorCaminho(); Tá pegando
-    //menor = bfs.getD(bfs.getAchado());
-    //cout << menor << endl;
+    bfs.menorCaminho(); //Tá pegando
+    menor = bfs.getD(bfs.getAchado());
+    cout << menor << endl;
     //ext = bfs.getCaminho();
   }
 
@@ -638,7 +648,18 @@ int main(int argc, char const *argv[]) {
   Processamento xadrez;
   xadrez.recebeEntrada();
   xadrez.inicializaMatriz();
+  /*vector<int> v = {4,2,7,5,8,1};
+  Ordenacao orde;
+  for(int i=0;i<v.size();i++){
+    cout << v[i] << '\t';
+  }
+  cout << endl;
 
+  orde.quicksort(v,0,v.size()-1);
+  for(int i=0;i<v.size();i++){
+    cout << v[i] << '\t';
+  }
+  cout << endl;*/
 
   return 0;
 }
