@@ -505,14 +505,14 @@ void Matriz::mapeaRei(int l,int c,int lr,int cr){
     }
   }
 
-    g.print();
+    //g.print();
     int inicio = tabuleiro_grafo[{l,c}];
     //cout << inicio << endl;
     bfs.run(g,inicio,tabuleiro_grafo[{lr,cr}]);
     //bfs.mostraBFS(); Tá pegando
-    bfs.menorCaminho(); //Tá pegando
+    //bfs.menorCaminho(); //Tá pegando
     menor = bfs.getD(bfs.getAchado());
-    cout << menor << endl;
+    //cout << menor << endl;
     //ext = bfs.getCaminho();
   }
 
@@ -540,7 +540,6 @@ public:
 	Processamento();
 	void recebeEntrada();
 	void convertePosicao();
-	pair<string,int> invertePosicao(pair<int,int> );
   void inicializaMatriz();
   pair<int,int> getRei();
   void finaliza();
@@ -584,18 +583,6 @@ void Processamento::convertePosicao(){
 
 }
 
-pair<string,int> Processamento::invertePosicao(pair<int,int> p){
-	pair<string, int> par;
-		for (int j = 1; j <= letras.size(); ++j){
-			if(p.second == j){
-				par = make_pair(letras[j],p.first);
-				//saida.push_back(par);
-        return par;
-			}
-		}
-
-}
-
 pair<int,int> Processamento::getRei(){
   return coordenadas[4];
 }
@@ -633,33 +620,38 @@ void Processamento::finaliza(){
 void Processamento::finalizaMostra(){
   for(int i =0;i<menor.size();i++){
      cout << mat[menor[i]].getMenor() << '\t';
-     for(int j=mat[menor[i]].getExt().size()-1; j>=0 ; j--){
-      pair<int,int> p = mat[menor[i]].getGrafoTabuleiro(mat[menor[i]].getExt()[j]);
-      pair<string,int> q = invertePosicao(p);
-      cout << q.first << q.second << '\t';
-     }
-     cout << endl;
   }
+  cout << endl;
 }
 
+class Entrada{
+public:
+  Entrada();
+  void inicia();
+  void termina();
+};
+Entrada::Entrada(){
+}
+
+void Entrada::inicia(){
+  Processamento xadrez;
+
+  //for(int i=0;i<2;i++){
+      xadrez.recebeEntrada();
+      xadrez.inicializaMatriz();
+      xadrez.finaliza();
+      xadrez.finalizaMostra();
+  //}
+}
 
 int main(int argc, char const *argv[]) {
 
-  Processamento xadrez;
+  /*Processamento xadrez;
   xadrez.recebeEntrada();
-  xadrez.inicializaMatriz();
-  /*vector<int> v = {4,2,7,5,8,1};
-  Ordenacao orde;
-  for(int i=0;i<v.size();i++){
-    cout << v[i] << '\t';
-  }
-  cout << endl;
+  xadrez.inicializaMatriz();*/
 
-  orde.quicksort(v,0,v.size()-1);
-  for(int i=0;i<v.size();i++){
-    cout << v[i] << '\t';
-  }
-  cout << endl;*/
+  Entrada xadrez;
+  xadrez.inicia();
 
   return 0;
 }
