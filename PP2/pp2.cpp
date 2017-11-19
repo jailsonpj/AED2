@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <vector>
 #include <climits>
-#include <map>
+#include <cfloat>
 #include <iomanip>
 #define NIL -1
 #define INFINITO 1111;
@@ -10,36 +10,144 @@
 enum Cores {BRANCO,CINZA,PRETO};
 using namespace std;
 
-template <class T>
-class No{
+//classe Union-Find - falta colocar template
+class Uniao{
 private:
-  T item;
-  No* prox;
+  int *paiVertice;
 public:
-  No(){
-    this->prox = NULL;
-  }
-  No(T item){
-    this->item = item;
-    this->prox = NULL;
-  }
-
-  No* getProx(){
-    return prox;
-  }
-
-  void setProx(No* prox){
-    this->prox = prox;
-  }
-
-  T getItem(){
-    return item;
-  }
-
-  void setItem(T item){
-    this->item = item;
-  }
+  Uniao();
+  void iniciaUniao(int);
+  int encontraPai(int);
+  void uniaoVertices(int,int);
+  int *getPaiVertice();
 };
+
+Uniao::Uniao(){ //construtor
+
+}
+
+void Uniao::iniciaUniao(int ordem){
+  paiVertice = new int[ordem+1];
+  for(int i=1;i<=ordem;i++){
+    paiVertice[i] = -1;
+  }
+}
+
+int Uniao::encontraPai(int vertice){
+  if(paiVertice[vertice] == -1){
+    return vertice;
+  }
+  return encontraPai(paiVertice[vertice]);
+}
+
+void Uniao::uniaoVertices(int vertice1,int vertice2){ //faz a uniao entre dois conjuntos
+  vertice1 = encontraPai(vertice1);
+  vertice2 = encontraPai(vertice2);
+
+  paiVertice[vertice1] =  vertice2;
+}
+
+int * Uniao::getPaiVertice(){
+  return paiVertice;
+}
+
+//Classe Fila de Prioridade usada no Dijkstra
+class FilaPrioridade{
+private:
+  int heapTamanho;
+  pair <int,float> *v;
+public:
+  FilaPrioridade();
+  void filaInicializa(int tamanho);
+  void minHeapifica(int );
+  pair<int,float> minHeap();
+  void diminuirValor (int i, pair<int,float>);
+  void enfileira(pair<int,float> );
+  pair<int,float> desenfileira();
+  void imprimirFilaPrioridade();
+  bool vazia();
+};
+FilaPrioridade::FilaPrioridade(){
+
+}
+
+void FilaPrioridade::filaInicializa(int tamanho){
+  this->heapTamanho = 0;
+  v = new pair<int,float>[tamanho+1];
+}
+
+void FilaPrioridade::minHeapifica(int i){ //heapfica
+  int esquerda = 2*i;
+  int direita = 2*i+1;
+  int menor;
+
+  if(esquerda <= heapTamanho and v[esquerda].second < v[i].second){
+    menor = esquerda;
+  }else{
+    menor = i;
+  }
+
+  if(direita <= heapTamanho and v[direita].second < v[menor].second){
+    menor = direita;
+  }
+
+  if(menor != i){
+    swap(v[i],v[menor]);
+    minHeapifica(menor);
+  }
+}
+
+pair<int,float> FilaPrioridade::minHeap(){ //retorna o valor do nó minimo
+  return v[0];
+}
+
+void FilaPrioridade::diminuirValor (int i, pair<int,float> val)
+{
+    if(val.second > v[i].second)
+    {
+        cout<< "Novos valores são inferiores ao valor atual, não podem ser inseridos" <<endl;
+        return;
+    }
+    v[i].first = val.first;
+    v[i].second = val.second;
+    while( i > 0 and v[i/2].second > v[i].second)
+    {
+        swap(v[i/2], v[i]);
+        i = i/2;
+    }
+}
+
+void FilaPrioridade::enfileira(pair<int,float> n){
+    ++heapTamanho;
+    v[heapTamanho-1].first = INT_MAX;
+    v[heapTamanho-1].second = FLT_MAX;
+    diminuirValor(heapTamanho - 1,n);
+}
+
+pair<int,float> FilaPrioridade::desenfileira(){
+  if(heapTamanho < 0){
+    cout << "heap vazio" << endl;
+  }
+  pair<int,float> min = v[0];
+  v[0] = v[heapTamanho-1];
+  --heapTamanho;
+  minHeapifica(0);
+  return min;
+}
+
+bool FilaPrioridade::vazia(){
+  if(heapTamanho < 0){
+      return true;
+  }
+}
+
+void FilaPrioridade::imprimirFilaPrioridade(){
+    cout << "saida" << endl;
+    while(heapTamanho){ // enquanto tamanho da fila for diferente do tamanho da heapsize faça
+        pair<int,float> ext = desenfileira();
+        cout << ext.first <<" "<< ext.second << endl;
+    }
+}
 
 //classe Ordenação
 class Ordenacao{
@@ -179,57 +287,14 @@ void Neuronio::mostraVerticePeso(){
   }
 }
 
-class Uniao{
-private:
-  int *paiVertice;
-public:
-  Uniao();
-  void iniciaUniao(int);
-  int encontraPai(int);
-  void uniaoVertices(int,int);
-  int *getPaiVertice();
-};
-
-Uniao::Uniao(){ //construtor
-
-}
-
-void Uniao::iniciaUniao(int ordem){
-  paiVertice = new int[ordem+1];
-  for(int i=1;i<=ordem;i++){
-    paiVertice[i] = -1;
-  }
-}
-
-int Uniao::encontraPai(int vertice){
-  if(paiVertice[vertice] == -1){
-    return vertice;
-  }
-  return encontraPai(paiVertice[vertice]);
-}
-
-void Uniao::uniaoVertices(int vertice1,int vertice2){ //faz a uniao entre dois conjuntos
-  vertice1 = encontraPai(vertice1);
-  vertice2 = encontraPai(vertice2);
-
-  paiVertice[vertice1] =  vertice2;
-}
-
-int * Uniao::getPaiVertice(){
-  return paiVertice;
-}
-
 class Kruskal{
 private:
   vector<pair<pair<int,int>,float>> arvore;
   void kruskal(Neuronio &);
-  Uniao uniao;
+  Uniao uniao; //atributo para a classe Union-Find
 public:
   Kruskal();
   void run(Neuronio &);
-  //void iniciaKruskal(int);
-  //int encontraPai(int);
-  //void uniaoVertices(int,int);
 };
 Kruskal::Kruskal(){}
 void Kruskal::run(Neuronio &neuronio){
@@ -260,73 +325,10 @@ void Kruskal::kruskal(Neuronio &neuronio){
     }*/
 
 }
-
-class Dijkstra{
-private:
-  int *d;
-  int *pred;
-  int *vertex;
-  void dijkstra(Cerebro &,int );
-public:
-  Dijkstra();
-  void run(Cerebro &,int,int);
-  int getD(int);
-  void inicializaDijkstra(Cerebro &,int);
-  void relaxa(Vertice<Vertex> &u,Vertice<Vertex> &v);
-};
-Dijkstra::Dijkstra(){
-}
-
-void Dijkstra::run(Cerebro &g,int origem,int destino){
-  dijkstra(g,origem,destino);
-}
-
-int Dijkstra::getD(int vertex){
-  return d[vertex];
-}
-
-void Dijkstra::inicializaDijkstra(Cerebro &g,int s){ // Inicializa predecessor,distancia
-  int ordem = g.getOrdemCerebro()
-  vertex = new int[ordem];
-  pred = new int[ordem];
-  d = new int[ordem];
-
-  for(int i=0;i<N;i++){
-    vertex[i] = i;
-    pred[i] = NIL;
-    d[i] = INFINITO;
-  }
-  d[s] = 0;
-}
-
-/*int DKJ::somaDist(Grafo &g,int u,int v){
-  return g.getPeso(u,v) + d[u];
-}*/
-
-void Dijkstra::relaxa(int u,int v,int w){
-  if(d[v] > (d[u] + w)){
-    d[v] = d[u] + w;
-    pred[v] = u;
-  }
-}
-
-void Dijkstra::dijkstra(Cerebro &g,int s){
-  InicializaDKJ(g,s);
-  //Q = G.V -> fila de prioridade minima;
-  /*
-    while( Q!= vazio ){
-      u = extract-min(Q);
-      S = S U {u};
-      para cada v E G.Adj[u]
-        float = Cerebro.getPesoCerebro(u,v);
-        relaxa(u,v,w);
-    }
-   */
-}
-
+//Classe Grafo-Cérebro
 class Cerebro{
 private:
-  float **vertices;
+  float **adjVertices;
   int ordemCerebro,tamanhoCerebro;
   Neuronio *neuronio;
   Cores *cor;
@@ -350,14 +352,14 @@ Cerebro::Cerebro(int ordem,int tamanho){
 void Cerebro::inicializaCerebro(int ordem,int tamanho){
   this->ordemCerebro = ordem;
   this->tamanhoCerebro = tamanho;
-  vertices = new float*[ordem+1]; //cria matriz
+  adjVertices = new float*[ordem+1]; //cria matriz
   for(int i=1;i<=ordem;i++){
-    vertices[i] = new float[ordem+1];
+    adjVertices[i] = new float[ordem+1];
   }
 
   for(int i=1;i<=ordem;i++){ // inicializa matriz com 0
     for(int j=1;j<=ordem;j++){
-      vertices[i][j] = 0;
+      adjVertices[i][j] = NIL;
     }
   }
 
@@ -365,7 +367,7 @@ void Cerebro::inicializaCerebro(int ordem,int tamanho){
 }
 
 void Cerebro::insereVerticeCerebro(int u, int v,float peso){
- vertices[u][v] = peso;
+ adjVertices[u][v] = peso;
  //vertices[v][u] = peso;
 }
 
@@ -384,7 +386,7 @@ void Cerebro::imprimeCerebro(){
         cout << setw(1) << i;
         cout << " |";
         for (int j = 1; j <= this->ordemCerebro; j++){
-            cout << setw(k) << vertices[i][j];
+            cout << setw(k) << adjVertices[i][j];
         }
         cout << endl;
     }
@@ -399,7 +401,7 @@ int Cerebro::getOrdemCerebro(){
 }
 
 int Cerebro::getPesoCerebro(int u,int v){
- return vertices[u][v];
+ return adjVertices[u][v];
 }
 
 void Cerebro::inicializaCerebroNeuronio(int indice,int ordem,int tamanho){
@@ -415,29 +417,113 @@ void Cerebro::imprimeCerebroNeuronio(int indice){
   cout << "Bloco Neuronio["<< indice <<"]" <<endl;
   neuronio[indice].imprimeNeuronio();
   //neuronio[indice].mostraVerticePeso(); está pegando
-  Kruskal k;
-  k.run(neuronio[indice]);
+  /*Kruskal k;
+  k.run(neuronio[indice]);*/ //Kruskal está pegando
 }
 
+//classe Dijkstra
+class Dijkstra{
+private:
+  int *distancia;
+  int *pred;
+  int *vertice;
+  void dijkstra(Cerebro &,int,int);
+  FilaPrioridade fila;
+public:
+  Dijkstra(){};
+  void run(Cerebro &,int,int);
+  int getDistancia(int);
+  void inicializaDijkstra(Cerebro &,int);
+  void relaxa(int u, int v, int w);
+  int *getPred();
+};
 
+void Dijkstra::run(Cerebro &g,int origem,int destino){
+  dijkstra(g,origem,destino);
+}
+
+int Dijkstra::getDistancia(int vertice){
+  return distancia[vertice];
+}
+
+void Dijkstra::inicializaDijkstra(Cerebro &g, int origem){ // Inicializa predecessor,distancia
+  int ordem = g.getOrdemCerebro();
+  vertice = new int[ordem+1];
+  pred = new int[ordem+1];
+  distancia = new int[ordem+1];
+
+  for(int i=1;i<=ordem;i++){ //inicia os vetores conforme os vertices,mesmo funcionamento da BFS
+    vertice[i] = i;
+    pred[i] = NIL;
+    distancia[i] = INFINITO;
+  }
+  distancia[origem] = 0;
+  fila.filaInicializa(ordem); //Inicializa a Fila de Prioridade
+  fila.enfileira({origem,distancia[origem]}); //passa o vertice inicial e seu pred e a sua distancia
+}
+
+void Dijkstra::relaxa(int u, int v, int w){
+  if(distancia[v] > (distancia[u] + w)){
+    distancia[v] = distancia[u] + w;
+    pred[v] = u;
+    fila.enfileira({v,distancia[v]});
+  }
+}
+
+void Dijkstra::dijkstra(Cerebro &g, int origem, int destino){
+  inicializaDijkstra(g,origem);
+  while(fila.vazia()){
+      pair<int,float> u = fila.desenfileira();
+      for(int v=1;v<=g.getOrdemCerebro();v++){
+          float w = g.getPesoCerebro(u.first,v);
+          if(w != NIL){
+            relaxa(u.first,v,w);
+          }
+      }
+    }
+}
+
+int *Dijkstra::getPred(){
+  return pred;
+}
 
 int main(int argc, char const *argv[]) {
   /* code */
-  Cerebro cerebro(5,6);
-  cerebro.insereVerticeCerebro(1,2,3.5);
-  cerebro.insereVerticeCerebro(1,3,2.6);
-  cerebro.insereVerticeCerebro(1,4,3.2);
-  cerebro.insereVerticeCerebro(1,5,2.1);
-  cerebro.insereVerticeCerebro(2,5,1.0);
-  cerebro.insereVerticeCerebro(3,4,1.1);
+  Cerebro cerebro(6,8);
+  cerebro.insereVerticeCerebro(1,2,2);
+  cerebro.insereVerticeCerebro(1,3,1);
+  cerebro.insereVerticeCerebro(2,5,4);
+  cerebro.insereVerticeCerebro(2,4,3);
+  cerebro.insereVerticeCerebro(3,4,2);
+  cerebro.insereVerticeCerebro(3,5,6);
+  cerebro.insereVerticeCerebro(4,6,7);
+  cerebro.insereVerticeCerebro(5,6,8);
 
   cerebro.imprimeCerebro();
 
-  cerebro.inicializaCerebroNeuronio(1,3,3); //passo a qual vertice o neuronio pertence , a ordem desse bloco e o tamanho
+  Dijkstra dk;
+  dk.run(cerebro,1,6);
+  cout << dk.getDistancia(6) << endl;
+
+  /*cerebro.inicializaCerebroNeuronio(1,3,3); //passo a qual vertice o neuronio pertence , a ordem desse bloco e o tamanho
   cerebro.insereCerebroNeuronio(1,1,2,2.5);
   cerebro.insereCerebroNeuronio(1,1,3,3.5);
   cerebro.insereCerebroNeuronio(1,2,3,1.0);
-  cerebro.imprimeCerebroNeuronio(1);
+  cerebro.imprimeCerebroNeuronio(1);*/
+
+  /*FilaPrioridade fp; //está super pegando a fila de prioridade
+  //pair<pair<int,int>,float> v = {{1,2},99};
+  fp.filaInicializa(9);
+  fp.enfileira({1,99});
+  fp.enfileira({3,9});
+  fp.enfileira({4,3});
+  fp.enfileira({5,19});
+  fp.enfileira({2,4});
+  fp.enfileira({10,1});
+  fp.enfileira({8,5});
+  fp.enfileira({9,2});
+
+  fp.imprimirFilaPrioridade();*/
 
   return 0;
 }
